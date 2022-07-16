@@ -23,7 +23,7 @@ while True:
     write('Player 1, please input a word or short phrase for player 2 to guess:', 0.015, 0)
     word = input()
     for i in list(word):
-        if i in tuple(string.digits) + tuple(string.punctuation):
+        if i in string.digits or string.punctuation:
             clear()
             print('Input contains invalid characters. Please try again.')
             time.sleep(1)
