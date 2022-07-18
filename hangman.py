@@ -2,6 +2,7 @@ import string
 import sys
 import time
 import os
+import random
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -15,18 +16,25 @@ def write(text, t, w): # Writes out text character by character
         time.sleep(t)
     time.sleep(w)
 
+chooser = 'Player 1'
+guesser = 'Player 2'
 while True:
     clear()
     print('Welcome to Hangman.')
     time.sleep(1)
 
     while True: # This is the entire loop for player 1
-        write('Player 1, please input a word or short phrase for player 2 to guess:', 0.015, 0)
+        write('Player 1, please input a word or short phrase for player 2 to guess, or input \'/s\' for singleplayer:', 0.01, 0)
         word = ''
         while word == '':
             word = input()
             if word == '':
                 sys.stdout.write('\033[F')
+        if word == '/s':
+            chooser ='CPU'
+            guesser = 'Player 1'
+            word = random.choice(open('wordlist.txt').readlines())[:-1]
+            break
         if len(word) > 75: # Input can't be too long
             clear()
             print('Input is over 75 characters long. Please try again.')
@@ -67,7 +75,7 @@ while True:
             sys.stdout.write('\033[F')
         write((''.join([i if i not in available else '_' for i in word])), 0.6 / len(word), 0.3)
         print('Available letters: ' + ' '.join(available))
-        write('Player 2, please guess a letter or type \'solve\' to solve:', 0.01, 0)
+        write(guesser + ', please guess a letter or type \'solve\' to solve:', 0.01, 0)
         guess = ''
         while guess == '':
             guess = input().upper()
@@ -119,8 +127,8 @@ while True:
                             write(word, 0.1, 0.5)
                         else:
                             write(word, 1 / len(word), 0.5)
-                        write('Player 2 was unable to guess the word!', 0.015, 0.5)
-                        write('Player 1 wins!', 0.015, 1)
+                        write(guesser + ' was unable to guess the word!', 0.015, 0.5)
+                        write(chooser + ' wins!', 0.015, 1)
                         break
             else:
                 write('You\'ve already guessed that letter. Please try again.', 0.015, 0)
@@ -133,13 +141,13 @@ while True:
             write(word, 0.1, 0.5)
         else:
             write(word, 1 / len(word), 0.5)
-        write('Player 1\'s word has been successfully guessed!', 0.015, 0.5)
-        write('Player 2 wins!', 0.015, 1)
+        write(chooser + '\'s word has been successfully guessed!', 0.015, 0.5)
+        write(guesser + ' wins!', 0.015, 1)
 
     if guess.upper() == 'SOLVE':
         clear()
         write((''.join([i if i not in available else '_' for i in word])), 0.6 / len(word), 0.3)
-        write('Player 2, please solve the word:', 0.01, 0)
+        write(guesser + ', please solve the word:', 0.01, 0)
         guess = ''
         while guess == '':
             guess = ' '.join(input().upper())
@@ -151,17 +159,13 @@ while True:
                 write(word, 0.1, 0.5)
             else:
                 write(word, 1 / len(word), 0.5)
-            write('Player 1\'s word has been successfully guessed!', 0.015, 0.5)
-            write('Player 2 wins!', 0.015, 1)
+            write(chooser + '\'s word has been successfully guessed!', 0.015, 0.5)
+            write(guesser + ' wins!', 0.015, 1)
         else:
-            hangman[2] = '  O   |'
-            hangman[3] = '  |   |'
-            hangman[3] = ' /|   |'
-            hangman[3] = ' /|\  |'
-            hangman[4] = ' /    |'
-            hangman[4] = ' / \  |'
-            hangman[2] = '  X   |'
             hangman[1] = '  |   |'
+            hangman[2] = '  X   |'
+            hangman[3] = ' /|\  |'
+            hangman[4] = ' / \  |'
             clear()
             print('\n'.join(hangman))
             time.sleep(1)
@@ -169,8 +173,8 @@ while True:
                 write(word, 0.1, 0.5)
             else:
                 write(word, 1 / len(word), 0.5)
-            write('Player 2 was unable to guess the word!', 0.015, 0.5)
-            write('Player 1 wins!', 0.015, 0.5)
+            write(guesser + ' was unable to guess the word!', 0.015, 0.5)
+            write(chooser + ' wins!', 0.015, 0.5)
     
     write('Would you like to play again? (y/n)', 0.015, 0)
     yesno = ''
